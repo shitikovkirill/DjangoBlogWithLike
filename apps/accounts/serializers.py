@@ -17,7 +17,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = get_user_model()
-        fields = ("username", "email", "password", "groups")
+        fields = ("id", "username", "email", "password", "groups")
 
 
 class GroupSerializer(serializers.ModelSerializer):

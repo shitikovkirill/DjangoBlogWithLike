@@ -1,0 +1,34 @@
+version: "3"
+services:
+
+  flower:
+    image: mher/flower
+    ports:
+      - "5555:5555"
+    command: flower --port=5555
+    env_file:
+      .env.dev
+
+  php-redis-admin:
+    image: faktiva/php-redis-admin
+    environment:
+      - PHPREDMIN_DATABASE_REDIS_0_HOST=redis
+    ports:
+      - "8080:80"
+    depends_on:
+      - "redis"
+
+  mail:
+    image: djfarrelly/maildev
+    ports:
+      - "1080:80"
+
+  pgadmin4:
+    image: dpage/pgadmin4
+    environment:
+    - PGADMIN_DEFAULT_EMAIL=test@gmail.com
+    - PGADMIN_DEFAULT_PASSWORD=qwerty
+    ports:
+    - "8888:80"
+    depends_on:
+    - "db"

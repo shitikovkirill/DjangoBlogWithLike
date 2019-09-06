@@ -1,0 +1,8 @@
+version: "3"
+
+services:
+
+  web:
+    command: bash ./scripts/testing.sh
+    volumes:
+      - ".:/app"
