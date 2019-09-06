@@ -11,7 +11,11 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     packages=setuptools.find_packages(),
-    install_requires=["django==2.2.5"],
+    install_requires=[
+        "django==2.2.5",
+        "djangorestframework==3.10.3",
+        "djangorestframework-jwt==1.11.0",
+    ],
     python_requires=">=3.6",
     scripts=["manage.py"],
 )

@@ -1,5 +1,6 @@
-.idea
-.tox
-*.egg-info
-devenv
-.pytest_cache
+/.idea
+/var/*
+/venv
+/.pytest_cache
+/*.egg-info
+__pycache__

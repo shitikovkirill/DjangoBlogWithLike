@@ -1,0 +1,9 @@
+version: "3"
+
+services:
+  tox:
+    build:
+      context: .
+      dockerfile: ./docker/tox/Dockerfile
+    volumes:
+      - ".:/src"
