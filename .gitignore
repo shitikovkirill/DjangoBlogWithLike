@@ -1,4 +1,5 @@
 /.idea
+.directory
 /var/*
 /venv
 /.pytest_cache
