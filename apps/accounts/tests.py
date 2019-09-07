@@ -33,6 +33,38 @@ class UserTestCase(TestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(json.loads(response.content)["username"], "test_user")
 
+    def test_register_user_fail_email(self):
+        client = APIClient()
+        response = client.post(
+            "/api/users/",
+            {
+                "username": "test_user",
+                "email": "test_usermial.com",
+                "password": "strongpass1",
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertTrue(
+            "Enter a valid email address." in json.loads(response.content)["email"]
+        )
+
+    def test_register_user_with_authenticated_user(self):
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION="Bearer " + self.test_user_token)
+        response = client.post(
+            "/api/users/",
+            {
+                "username": "test_user2",
+                "email": "test_user2@mial.com",
+                "password": "strongpass1",
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(
+            json.loads(response.content)["detail"],
+            "You do not have permission to perform this action.",
+        )
+
     def test_token(self):
         client = APIClient()
         response = client.post(
@@ -52,8 +84,12 @@ class UserTestCase(TestCase):
             format="json",
         )
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTrue(json.loads(response.content)["token"])
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertTrue(json.loads(response.content)["non_field_errors"])
+        self.assertTrue(
+            "Unable to log in with provided credentials."
+            in json.loads(response.content)["non_field_errors"]
+        )
 
     def test_token_refresh(self):
 
@@ -65,6 +101,17 @@ class UserTestCase(TestCase):
         self.assertTrue(json.loads(response.content)["token"])
         self.assertEquals(self.test_user_token, json.loads(response.content)["token"])
 
+    def test_token_refresh_fail(self):
+        client = APIClient()
+        response = client.post(
+            "/api/token-refresh/", {"token": "Wrong token"}, format="json"
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertTrue(json.loads(response.content)["non_field_errors"])
+        self.assertTrue(
+            "Error decoding token." in json.loads(response.content)["non_field_errors"]
+        )
+
     def test_token_verify(self):
         client = APIClient()
         response = client.post(
@@ -74,19 +121,13 @@ class UserTestCase(TestCase):
         self.assertTrue(json.loads(response.content)["token"])
         self.assertEquals(self.test_user_token, json.loads(response.content)["token"])
 
-    def test_register_user_with_authenticated_user(self):
+    def test_token_verify_fail(self):
         client = APIClient()
-        client.credentials(HTTP_AUTHORIZATION="Bearer " + self.test_user_token)
         response = client.post(
-            "/api/users/",
-            {
-                "username": "test_user2",
-                "email": "test_user2@mial.com",
-                "password": "strongpass1",
-            },
+            "/api/token-verify/", {"token": "Wrong token"}, format="json"
         )
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        self.assertEqual(
-            json.loads(response.content)["detail"],
-            "You do not have permission to perform this action.",
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertTrue(json.loads(response.content)["non_field_errors"])
+        self.assertTrue(
+            "Error decoding token." in json.loads(response.content)["non_field_errors"]
         )

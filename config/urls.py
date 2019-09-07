@@ -4,9 +4,12 @@ from rest_framework import routers
 from apps.accounts.views import UserViewSet
 from rest_framework_jwt import views as jwtViews
 
+from apps.blog.views import LikeViewSet, PostViewSet
 
 router = routers.DefaultRouter()
 router.register(r"users", UserViewSet)
+router.register(r"likes", LikeViewSet)
+router.register(r"posts", PostViewSet)
 
 api_patterns = (
     [
