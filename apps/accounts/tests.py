@@ -44,8 +44,9 @@ class UserTestCase(TestCase):
             },
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertTrue(
-            "Enter a valid email address." in json.loads(response.content)["email"]
+        self.assertIn(
+            "Enter a valid email address.",
+            json.loads(response.content)["email"]
         )
 
     def test_register_user_with_authenticated_user(self):
@@ -86,9 +87,9 @@ class UserTestCase(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertTrue(json.loads(response.content)["non_field_errors"])
-        self.assertTrue(
-            "Unable to log in with provided credentials."
-            in json.loads(response.content)["non_field_errors"]
+        self.assertIn(
+            "Unable to log in with provided credentials.",
+            json.loads(response.content)["non_field_errors"],
         )
 
     def test_token_refresh(self):
@@ -108,8 +109,9 @@ class UserTestCase(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertTrue(json.loads(response.content)["non_field_errors"])
-        self.assertTrue(
-            "Error decoding token." in json.loads(response.content)["non_field_errors"]
+        self.assertIn(
+            "Error decoding token.",
+            json.loads(response.content)["non_field_errors"]
         )
 
     def test_token_verify(self):
@@ -128,6 +130,7 @@ class UserTestCase(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertTrue(json.loads(response.content)["non_field_errors"])
-        self.assertTrue(
-            "Error decoding token." in json.loads(response.content)["non_field_errors"]
+        self.assertIn(
+            "Error decoding token.",
+            json.loads(response.content)["non_field_errors"]
         )
