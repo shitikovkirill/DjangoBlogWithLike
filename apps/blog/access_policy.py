@@ -9,4 +9,4 @@ class PostAccessPolicy(AccessPolicy):
 
 
 class LikeAccessPolicy(AccessPolicy):
-    statements = [{"action": ["*"], "principal": "*", "effect": "allow"}]
+    statements = [{"action": ["*"], "principal": "authenticated", "effect": "allow"}]

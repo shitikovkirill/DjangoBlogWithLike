@@ -1,6 +1,5 @@
 from rest_framework import viewsets
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import NotAuthenticated
 from rest_framework.response import Response
 
@@ -40,7 +39,7 @@ class LikeViewSet(viewsets.ModelViewSet):
 
     queryset = Like.objects.all()
     serializer_class = LikeSerializer
-    permission_classes = [LikeAccessPolicy, IsAuthenticated, IsOwner]
+    permission_classes = [LikeAccessPolicy, IsOwner]
 
     def get_queryset(self):
         """
@@ -52,8 +51,8 @@ class LikeViewSet(viewsets.ModelViewSet):
             raise NotAuthenticated("You must login for get this data!")
         params["user"] = self.request.user
 
-        if self.request.query_params.get("composition"):
-            params["composition__id"] = self.request.query_params.get("composition")
+        if self.request.query_params.get("post"):
+            params["post__id"] = self.request.query_params.get("post")
 
         return self.queryset.filter(**params)
 
