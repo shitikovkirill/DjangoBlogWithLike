@@ -1,7 +1,9 @@
 from rest_framework import viewsets
 from rest_framework import status
 from rest_framework.exceptions import NotAuthenticated
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.decorators import action
 
 from apps.blog.access_policy import PostAccessPolicy, LikeAccessPolicy
 from apps.blog.serializers import PostSerializer, LikeSerializer
@@ -31,6 +33,34 @@ class PostViewSet(viewsets.ModelViewSet):
         serializer = PostSerializer(composition, context=serializer_context)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+    @action(detail=True, methods=["post"], permission_classes=[IsAuthenticated])
+    def like(self, request, pk=None):
+        post = Post.objects.get(pk=pk)
+        self.reaction(post, request.user, reaction=True)
+        return Response({"status": "Post liked."})
+
+    @action(detail=True, methods=["post"], permission_classes=[IsAuthenticated])
+    def unlike(self, request, pk=None):
+        post = Post.objects.get(pk=pk)
+        self.reaction(post, request.user, reaction=False)
+        return Response({"status": "Post unliked."})
+
+    def reaction(self, post, user, *, reaction: bool) -> Like:
+        like = Like.objects.filter(post=post, user=user).first()
+        if like is None:
+            like = Like.objects.create(post=post, user=user, like=reaction)
+        else:
+            like.like = reaction
+            like.save()
+        return like
+
+    @action(detail=True, methods=["post"], permission_classes=[IsAuthenticated])
+    def delete_reaction(self, request, pk=None):
+        post = Post.objects.get(pk=pk)
+        like = Like.objects.get(post=post, user=request.user)
+        like.delete()
+        return Response({"status": "User reaction deleted."})
+
 
 class LikeViewSet(viewsets.ModelViewSet):
     """
@@ -55,7 +85,3 @@ class LikeViewSet(viewsets.ModelViewSet):
             params["post__id"] = self.request.query_params.get("post")
 
         return self.queryset.filter(**params)
-
-    def perform_create(self, serializer):
-        post = Post.objects.get(pk=self.request.data["post"]["id"])
-        serializer.save(user=self.request.user, post=post)

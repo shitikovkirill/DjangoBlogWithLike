@@ -14,3 +14,27 @@ Content-Type: application/json
 }
 
 ###
+
+POST http://{{host}}:{{port}}/api/posts/1/like/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{}
+
+###
+
+POST http://{{host}}:{{port}}/api/posts/1/unlike/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{}
+
+###
+
+POST http://{{host}}:{{port}}/api/posts/1/delete_reaction/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{}
+
+###
