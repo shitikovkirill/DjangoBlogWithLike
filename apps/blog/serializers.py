@@ -19,9 +19,11 @@ class PostSerializer(serializers.ModelSerializer):
         model = Post
         fields = ("id", "title", "description", "user", "is_liked")
 
-    def get_is_liked(self, obj) -> bool:
+    def get_is_liked(self, obj):
         user = self.context.get("request").user
         if user.is_anonymous:
-            return False
-        like = Like.objects.filter(user=user, post=obj).first()
-        return bool(like)
+            return None
+        like = Like.objects.get_this_like(user, obj)
+        if like is None:
+            return None
+        return like.like

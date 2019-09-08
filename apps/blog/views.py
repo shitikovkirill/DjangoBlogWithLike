@@ -1,6 +1,6 @@
 from rest_framework import viewsets
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import NotAuthenticated
 from rest_framework.response import Response
 
@@ -19,17 +19,11 @@ class PostViewSet(viewsets.ModelViewSet):
     serializer_class = PostSerializer
     permission_classes = [PostAccessPolicy]
 
-    def get_permissions(self):
-        """
-        Instantiates and returns the list of permissions that this view requires.
-        """
-        if self.action in ["list", "retrieve"]:
-            my_permission_classes = self.permission_classes
-        elif self.action == "create":
-            my_permission_classes = [IsAuthenticated]
-        else:
-            my_permission_classes = [IsAdminUser]
-        return [permission() for permission in my_permission_classes]
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_authenticated:
+            return self.queryset.get_posts_include_unpablished(user)
+        return self.queryset.published()
 
     def create(self, request):
         composition = Post.objects.create(**request.data, user=request.user)

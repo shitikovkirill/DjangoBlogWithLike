@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from apps.blog.repository import PostQuerySet, LikeQuerySet
 
 
 class TimeStampedModel(models.Model):
@@ -8,11 +9,6 @@ class TimeStampedModel(models.Model):
 
     class Meta:
         abstract = True
-
-
-class PostQuerySet(models.QuerySet):
-    def published(self):
-        return self.filter(publish=True)
 
 
 class Post(TimeStampedModel):
@@ -35,6 +31,8 @@ class Like(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     like = models.BooleanField(default=True)  # if True - like if False - unlike
     timestamp = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+
+    objects = LikeQuerySet.as_manager()
 
     def __str__(self):
         return "{name} likes this post".format(name=self.user.username)
