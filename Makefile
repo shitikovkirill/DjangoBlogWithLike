@@ -20,3 +20,6 @@ test:
 
 lint:
 	$(DOCKER_TEST) run --rm web tox -e lint
+
+user:
+	$(DOCKER_TEST) run --rm web /app/venv/bin/python /app/manage.py createsuperuser

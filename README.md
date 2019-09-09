@@ -2,10 +2,9 @@
 
 ## Install
 
-Need to install `tox`.
-```bash
-tox -e devenv
-source devenv/bin/activate
+```
+make up
+make user
 ```
 
-http://qaru.site/questions/125994/custom-queryset-and-manager-without-breaking-dry
+url localhost:8000

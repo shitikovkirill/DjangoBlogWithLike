@@ -7,10 +7,11 @@
 
 POST http://{{host}}:{{port}}/api/posts/
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
   "title": "Create post",
-  "description": "Post description.",
+  "description": "Post description."
 }
 
 ###
