@@ -1,4 +1,4 @@
-# StarNaviTest
+# DjangoBlogWithLike
 
 ## Install
 
