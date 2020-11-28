@@ -1,4 +1,4 @@
-# DjangoBlogWithLike
+# DjangoLikes
 
 ## Install
 
