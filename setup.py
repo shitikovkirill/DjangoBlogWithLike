@@ -14,7 +14,7 @@ setuptools.setup(
     install_requires=[
         "django==2.2.5",
         "djangorestframework==3.10.3",
-        "drf-jwt==1.13.2",
+        "drf-jwt==1.15.1",
         "drf-access-policy==0.4.2",
     ],
     python_requires=">=3.6",
