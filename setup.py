@@ -12,7 +12,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     packages=setuptools.find_packages(),
     install_requires=[
-        "django==2.2.5",
+        "django==2.2.27",
         "djangorestframework==3.10.3",
         "drf-jwt==1.13.2",
         "drf-access-policy==0.4.2",
